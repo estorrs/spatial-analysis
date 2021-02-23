@@ -21,9 +21,12 @@ WORKDIR /spatial-analysis
 
 # make sure we use the conda env
 RUN conda env create -f /spatial-analysis/environment/spatial.yml
-SHELL ["conda", "run", "-n", "spatial", "/bin/bash", "-c"]
+## ENV PATH /opt/conda/envs/spatial/bin:$PATH
+## ENV CONDA_DEFAULT_ENV spatial
+## RUN /bin/bash -c "source activate spatial"
 
-RUN conda install -y -c conda-forge xgboost altair
-RUN pip install tensorflow==2.1.0
+RUN /miniconda/envs/spatial/bin/pip install tensorflow==2.1.0 xgboost altair
 
-CMD jupyter notebook --no-browser --allow-root --ip 0.0.0.0
+## CMD jupyter notebook --no-browser --allow-root --ip 0.0.0.0
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "spatial", "jupyter", "notebook",\
+  "--no-browser", "--allow-root", "--ip", "0.0.0.0"]
